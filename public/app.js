@@ -96,9 +96,19 @@ function updateBubblePosition() {
     const activeRect = activeLink.getBoundingClientRect();
     const navRect = navBar.getBoundingClientRect();
     
-    // Calcular posición horizontal relativa al contenedor
-    const leftPos = activeRect.left - navRect.left + (activeRect.width / 2) - 24; // 24 es la mitad del ancho de la burbuja (48px)
+    // Ajustar burbuja al tamaño del item con un padding interno
+    const paddingHorizontal = 10;
+    const paddingVertical = 6;
+    
+    const bubbleWidth = activeRect.width - (paddingHorizontal * 2);
+    const bubbleHeight = activeRect.height - (paddingVertical * 2);
+    const leftPos = activeRect.left - navRect.left + paddingHorizontal;
+    const topPos = activeRect.top - navRect.top + paddingVertical;
+    
+    bubble.style.width = `${bubbleWidth}px`;
+    bubble.style.height = `${bubbleHeight}px`;
     bubble.style.left = `${leftPos}px`;
+    bubble.style.top = `${topPos}px`;
 }
 
 // --- MANEJO DE DATOS Y SINCRONIZACIÓN ---
