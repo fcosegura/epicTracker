@@ -7,4 +7,4 @@ pages_build_output_dir = "./public"
 binding = "DB"
 database_name = "game-tracker-db"
 # Reemplazar con el ID real en producción si es necesario
-database_id = "d1-database-uuid-placeholder"
+database_id = "89a6e7ce-a967-4ce1-95e4-699ee398ac58"
