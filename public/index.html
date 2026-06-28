@@ -50,7 +50,12 @@
                 <div class="search-bar-container">
                     <div class="input-glow-wrapper">
                         <input type="text" id="search-input" placeholder="Buscar por nombre, elemento, almacenamiento..." autocomplete="off">
-                        <span class="search-icon">🔍</span>
+                        <span class="search-icon">
+                            <svg class="search-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </span>
                     </div>
                 </div>
 
@@ -281,21 +286,43 @@
                 </defs>
             </svg>
             
-            <div class="liquid-nav-bar">
-                <div class="liquid-bubble-bg"></div>
-                <a href="#search" class="nav-item active" data-page="search" id="nav-btn-search">
-                    <span class="nav-icon">🔍</span>
-                    <span class="nav-label">Buscar</span>
-                </a>
-                <a href="#add" class="nav-item" data-page="add" id="nav-btn-add">
-                    <span class="nav-icon">➕</span>
-                    <span class="nav-label">Añadir</span>
-                </a>
-                <a href="#settings" class="nav-item" data-page="settings" id="nav-btn-settings">
-                    <span class="nav-icon">⚙️</span>
-                    <span class="nav-label">Ajustes</span>
-                </a>
-            </div>
+            <div class="liquid-nav-wrapper">
+                <!-- Background with Gooey Filter applied ONLY to background shapes -->
+                <div class="liquid-nav-bg-container">
+                    <div class="liquid-nav-bar-bg"></div>
+                    <div class="liquid-bubble-bg"></div>
+                </div>
+                
+                <!-- Foreground with perfectly sharp SVG icons and labels -->
+                <div class="liquid-nav-items">
+                    <a href="#search" class="nav-item active" data-page="search" id="nav-btn-search">
+                        <span class="nav-icon">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </span>
+                        <span class="nav-label">Buscar</span>
+                    </a>
+                    <a href="#add" class="nav-item" data-page="add" id="nav-btn-add">
+                        <span class="nav-icon">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </span>
+                        <span class="nav-label">Añadir</span>
+                    </a>
+                    <a href="#settings" class="nav-item" data-page="settings" id="nav-btn-settings">
+                        <span class="nav-icon">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            </svg>
+                        </span>
+                        <span class="nav-label">Ajustes</span>
+                    </a>
+                </div>
         </nav>
     </div>
 

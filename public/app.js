@@ -91,7 +91,7 @@ function updateBubblePosition() {
     if (!activeLink) return;
     
     const bubble = document.querySelector('.liquid-bubble-bg');
-    const navBar = document.querySelector('.liquid-nav-bar');
+    const navBar = document.querySelector('.liquid-nav-wrapper');
     
     const activeRect = activeLink.getBoundingClientRect();
     const navRect = navBar.getBoundingClientRect();
