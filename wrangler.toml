@@ -1,0 +1,10 @@
+# Configuración de Cloudflare Pages para local dev y producción
+name = "cloudflare-game-tracker"
+pages_build_output_dir = "./public"
+
+# Configuración de base de datos D1
+[[d1_databases]]
+binding = "DB"
+database_name = "game-tracker-db"
+# Reemplazar con el ID real en producción si es necesario
+database_id = "d1-database-uuid-placeholder"

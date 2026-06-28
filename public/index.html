@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Unit Tracker</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Gestiona y haz seguimiento de tus personajes y unidades de juego con estilo, sincronización en Cloudflare y soporte offline PWA.">
+    <meta name="theme-color" content="#0d0e15">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+</head>
+<body>
+
+    <!-- Background decorative glows -->
+    <div class="glow-bg glow-1"></div>
+    <div class="glow-bg glow-2"></div>
+    <div class="glow-bg glow-3"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="logo-text">UNIT<span>TRACKER</span></h1>
+            <div id="user-status-indicator" class="user-pill">
+                <span class="status-dot offline"></span>
+                <span class="user-name">Invitado</span>
+            </div>
+        </header>
+
+        <!-- Dynamic Views -->
+        <main class="app-main">
+            
+            <!-- SEARCH PAGE -->
+            <section id="search-page" class="app-page active">
+                <div class="page-header">
+                    <h2>Buscar Unidades</h2>
+                    <p class="subtitle">Encuentra y filtra tus personajes guardados</p>
+                </div>
+                
+                <div class="search-bar-container">
+                    <div class="input-glow-wrapper">
+                        <input type="text" id="search-input" placeholder="Buscar por nombre, elemento, almacenamiento..." autocomplete="off">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+
+                <div class="filter-pills-row">
+                    <select id="filter-rarity" class="filter-select">
+                        <option value="">Todas las Rarezas</option>
+                        <option value="1">⭐ 1 estrella</option>
+                        <option value="2">⭐⭐ 2 estrellas</option>
+                        <option value="3">⭐⭐⭐ 3 estrellas</option>
+                        <option value="4">⭐⭐⭐⭐ 4 estrellas</option>
+                        <option value="5">⭐⭐⭐⭐⭐ 5 estrellas</option>
+                        <option value="6">⭐⭐⭐⭐⭐⭐ 6 estrellas</option>
+                    </select>
+                    
+                    <select id="filter-element" class="filter-select">
+                        <option value="">Todos los Elementos</option>
+                        <option value="Fuego">🔥 Fuego</option>
+                        <option value="Agua">💧 Agua</option>
+                        <option value="Viento">🍃 Viento</option>
+                        <option value="Luz">✨ Luz</option>
+                        <option value="Oscuridad">👁️ Oscuridad</option>
+                    </select>
+                </div>
+
+                <div id="units-grid" class="units-grid">
+                    <!-- Cards will be dynamically inserted here -->
+                    <div class="empty-state">
+                        <p>No se encontraron personajes. ¡Añade tu primer personaje usando el menú inferior!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADD PAGE -->
+            <section id="add-page" class="app-page">
+                <div class="page-header">
+                    <h2>Agregar Personaje</h2>
+                    <p class="subtitle">Registra una nueva unidad en tu colección</p>
+                </div>
+                
+                <form id="add-unit-form" class="glass-form" novalidate>
+                    <div class="form-group">
+                        <label for="add-name">Nombre del Personaje</label>
+                        <div class="autocomplete-container">
+                            <input type="text" id="add-name" required placeholder="Ej. Artamiel, Camilla..." autocomplete="off">
+                            <div id="autocomplete-suggestions" class="suggestions-dropdown hidden"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="add-rarity">Rareza Nativa</label>
+                            <select id="add-rarity" required>
+                                <option value="5">⭐⭐⭐⭐⭐ 5★</option>
+                                <option value="6">⭐⭐⭐⭐⭐⭐ 6★</option>
+                                <option value="4">⭐⭐⭐⭐ 4★</option>
+                                <option value="3">⭐⭐⭐ 3★</option>
+                                <option value="2">⭐⭐ 2★</option>
+                                <option value="1">⭐ 1★</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="add-awaken">Nivel de Despertar</label>
+                            <select id="add-awaken" required>
+                                <option value="0">Sin despertar (+0)</option>
+                                <option value="1">Awaken I (+1)</option>
+                                <option value="2">Awaken II (+2)</option>
+                                <option value="3">Awaken III (+3)</option>
+                                <option value="4">Awaken IV (+4)</option>
+                                <option value="5">Awaken V (+5)</option>
+                                <option value="6">Despertar Máximo (+6)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="add-element">Elemento</label>
+                            <select id="add-element" required>
+                                <option value="Fuego">🔥 Fuego</option>
+                                <option value="Agua">💧 Agua</option>
+                                <option value="Viento">🍃 Viento</option>
+                                <option value="Luz">✨ Luz</option>
+                                <option value="Oscuridad">👁️ Oscuridad</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="add-storage">Almacenamiento (Storage)</label>
+                            <select id="add-storage" required>
+                                <option value="Inventario Principal">🎒 Inventario Principal</option>
+                                <option value="Almacén Auxiliar">📦 Almacén Auxiliar</option>
+                                <option value="Cofre de Batalla">⚔️ Cofre de Batalla</option>
+                                <option value="Santurario">🏛️ Santuario de Héroes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary glow-btn-purple">Guardar Personaje</button>
+                </form>
+            </section>
+
+            <!-- DETAIL PAGE -->
+            <section id="detail-page" class="app-page">
+                <div class="back-nav">
+                    <a href="#search" class="back-link">← Volver a la búsqueda</a>
+                </div>
+
+                <div class="page-header">
+                    <h2>Ficha de Personaje</h2>
+                    <p class="subtitle">Visualiza y actualiza la información detallada</p>
+                </div>
+
+                <form id="edit-unit-form" class="glass-form" novalidate>
+                    <input type="hidden" id="edit-id">
+                    
+                    <div class="form-group">
+                        <label for="edit-name">Nombre del Personaje</label>
+                        <input type="text" id="edit-name" required placeholder="Ej. Artamiel...">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-rarity">Rareza Nativa</label>
+                            <select id="edit-rarity" required>
+                                <option value="1">⭐ 1★</option>
+                                <option value="2">⭐⭐ 2★</option>
+                                <option value="3">⭐⭐⭐ 3★</option>
+                                <option value="4">⭐⭐⭐⭐ 4★</option>
+                                <option value="5">⭐⭐⭐⭐⭐ 5★</option>
+                                <option value="6">⭐⭐⭐⭐⭐⭐ 6★</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-awaken">Nivel de Despertar</label>
+                            <select id="edit-awaken" required>
+                                <option value="0">Sin despertar (+0)</option>
+                                <option value="1">Awaken I (+1)</option>
+                                <option value="2">Awaken II (+2)</option>
+                                <option value="3">Awaken III (+3)</option>
+                                <option value="4">Awaken IV (+4)</option>
+                                <option value="5">Awaken V (+5)</option>
+                                <option value="6">Despertar Máximo (+6)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-element">Elemento</label>
+                            <select id="edit-element" required>
+                                <option value="Fuego">🔥 Fuego</option>
+                                <option value="Agua">💧 Agua</option>
+                                <option value="Viento">🍃 Viento</option>
+                                <option value="Luz">✨ Luz</option>
+                                <option value="Oscuridad">👁️ Oscuridad</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-storage">Almacenamiento (Storage)</label>
+                            <select id="edit-storage" required>
+                                <option value="Inventario Principal">🎒 Inventario Principal</option>
+                                <option value="Almacén Auxiliar">📦 Almacén Auxiliar</option>
+                                <option value="Cofre de Batalla">⚔️ Cofre de Batalla</option>
+                                <option value="Santurario">🏛️ Santuario de Héroes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary glow-btn-cyan">Guardar Cambios</button>
+                        <button type="button" id="delete-btn" class="btn btn-danger">Eliminar Personaje</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- SETTINGS PAGE -->
+            <section id="settings-page" class="app-page">
+                <div class="page-header">
+                    <h2>Ajustes Generales</h2>
+                    <p class="subtitle">Configura tus preferencias e integración Cloudflare</p>
+                </div>
+
+                <div class="settings-card glass-panel">
+                    <h3>Autenticación y Sincronización</h3>
+                    <p class="setting-desc">Vincula tu cuenta para almacenar personajes en la base de datos Cloudflare D1 en la nube.</p>
+                    
+                    <div id="auth-section" class="auth-status-container">
+                        <!-- Will be dynamically updated by JS -->
+                        <div class="auth-loading">Verificando estado de sesión...</div>
+                    </div>
+                </div>
+
+                <div class="settings-card glass-panel">
+                    <h3>Personalización y Tema</h3>
+                    <div class="setting-row">
+                        <span>Tema Oscuro Neon (Recomendado)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-theme-toggle" checked disabled>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Modo Offline (PWA)</span>
+                        <span id="pwa-status-badge" class="badge badge-success">Activado</span>
+                    </div>
+                </div>
+
+                <div class="settings-card glass-panel">
+                    <h3>Sobre la Aplicación</h3>
+                    <p class="about-text">Game Unit Tracker v1.0.0. Desarrollado con Cloudflare Pages, Workers, D1 y Liquid Glass UI.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Liquid Glass Navigation Bar -->
+        <nav class="liquid-nav-container">
+            <!-- Hidden SVG gooey filter -->
+            <svg class="gooey-svg" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <defs>
+                    <filter id="liquid-goo">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+                        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+                        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+                    </filter>
+                </defs>
+            </svg>
+            
+            <div class="liquid-nav-bar">
+                <div class="liquid-bubble-bg"></div>
+                <a href="#search" class="nav-item active" data-page="search" id="nav-btn-search">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-label">Buscar</span>
+                </a>
+                <a href="#add" class="nav-item" data-page="add" id="nav-btn-add">
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-label">Añadir</span>
+                </a>
+                <a href="#settings" class="nav-item" data-page="settings" id="nav-btn-settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Ajustes</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- MODAL WARNING FOR DUPLICATES -->
+    <div id="duplicate-modal" class="modal-overlay hidden">
+        <div class="modal-box glass-panel">
+            <div class="modal-header">
+                <span class="modal-warn-icon">⚠️</span>
+                <h3>¡Nombre Duplicado!</h3>
+            </div>
+            <div class="modal-body">
+                <p>Ya existe un personaje guardado con el nombre <strong id="duplicate-char-name">"Artamiel"</strong>.</p>
+                <p>¿Estás seguro de que deseas añadir otro personaje con el mismo nombre? Se creará como una copia independiente.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-confirm-btn" class="btn btn-primary">Sí, añadir copia</button>
+                <button id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

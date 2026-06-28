@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Glowing Accents -->
+    <linearGradient id="neon-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#db2777" />
+    </linearGradient>
+
+    <!-- Shadow filters for neon glow -->
+    <filter id="glow-filter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Maskable PWA background -->
+  <rect width="512" height="512" rx="100" fill="url(#bg-grad)" />
+
+  <!-- Outer Neon Ring -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="url(#neon-glow)" stroke-width="8" opacity="0.6" filter="url(#glow-filter)" />
+
+  <!-- Game Trophy / Sword Symbol (Vibrant & Neon styled) -->
+  <g filter="url(#glow-filter)">
+    <!-- Shield/Base Shape -->
+    <path d="M256 100 L380 160 L380 300 C380 380 256 430 256 430 C256 430 132 380 132 300 L132 160 Z" 
+          fill="none" 
+          stroke="url(#neon-glow)" 
+          stroke-width="16" 
+          stroke-linejoin="round" />
+    
+    <!-- Inner Spark/Star -->
+    <path d="M256 170 L275 225 L330 225 L285 260 L302 315 L256 280 L210 315 L227 260 L182 225 L237 225 Z" 
+          fill="url(#neon-glow)" />
+  </g>
+</svg>
