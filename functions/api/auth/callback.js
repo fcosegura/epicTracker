@@ -1,10 +1,15 @@
-import { signJWT, jsonResponse } from '../utils.js';
+import { signJWT, parseCookies, getJwtSecret, isDevelopment } from '../utils.js';
 
 export async function onRequest(context) {
     const { request, env } = context;
     const url = new URL(request.url);
     const code = url.searchParams.get('code');
-    const secret = env.JWT_SECRET || 'secret-jwt-game-tracker-fallback';
+    const secret = getJwtSecret(env);
+    const clearState = 'oauth_state=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax; Secure';
+
+    if (!secret) {
+        return new Response("Configuración incompleta: JWT_SECRET ausente o demasiado corto.", { status: 500 });
+    }
 
     if (!code) {
         return new Response("Falta el parámetro 'code' de autorización", { status: 400 });
@@ -13,7 +18,7 @@ export async function onRequest(context) {
     let userPayload = null;
 
     // --- MODO DESARROLLO (MOCK) ---
-    if (code === 'mock_dev_code') {
+    if (code === 'mock_dev_code' && isDevelopment(env)) {
         userPayload = {
             id: 'dev-user-999',
             username: 'dev_trainer',
@@ -24,6 +29,16 @@ export async function onRequest(context) {
     } 
     // --- MODO REAL (GITHUB OAUTH) ---
     else {
+        // Verificar `state` contra la cookie emitida en /api/auth/login
+        const expectedState = parseCookies(request)['oauth_state'];
+        const state = url.searchParams.get('state');
+        if (!expectedState || !state || state !== expectedState) {
+            return new Response("Parámetro 'state' inválido o ausente", {
+                status: 400,
+                headers: { 'Set-Cookie': clearState }
+            });
+        }
+
         const clientId = env.GITHUB_CLIENT_ID;
         const clientSecret = env.GITHUB_CLIENT_SECRET;
         
@@ -84,14 +99,11 @@ export async function onRequest(context) {
     const token = await signJWT(userPayload, secret);
     
     // Cookie de sesión segura de 30 días
-    const cookie = `session_token=${token}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax; Secure`;
+    const cookie = `session_token=${token}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Strict; Secure`;
     
     // Redirigir de vuelta a los ajustes
-    return new Response(null, {
-        status: 302,
-        headers: {
-            'Location': `${url.origin}/#settings`,
-            'Set-Cookie': cookie
-        }
-    });
+    const headers = new Headers({ 'Location': `${url.origin}/#settings` });
+    headers.append('Set-Cookie', cookie);
+    headers.append('Set-Cookie', clearState);
+    return new Response(null, { status: 302, headers });
 }

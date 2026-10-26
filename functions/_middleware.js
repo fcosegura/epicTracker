@@ -1,21 +1,14 @@
-import { verifyJWT, parseCookies, jsonResponse } from './api/utils.js';
+import { verifyJWT, parseCookies, jsonResponse, getJwtSecret } from './api/utils.js';
 
 export async function onRequest(context) {
     const { request, env } = context;
     const url = new URL(request.url);
-    const secret = env.JWT_SECRET || 'secret-jwt-game-tracker-fallback';
+    const secret = getJwtSecret(env);
 
-    // Manejar opciones preflight (CORS) de forma global si es necesario
-    if (request.method === 'OPTIONS') {
-        return new Response(null, {
-            status: 204,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Max-Age': '86400',
-            }
-        });
+    // La app y la API comparten origen: no se emiten cabeceras CORS, así que
+    // los navegadores bloquean el acceso desde otros orígenes.
+    if (url.pathname.startsWith('/api/') && !secret) {
+        return jsonResponse({ error: 'Configuración del servidor incompleta' }, 500);
     }
 
     const cookies = parseCookies(request);
@@ -31,7 +24,7 @@ export async function onRequest(context) {
         if (!user) {
             // Eliminar la cookie si ya venció o es inválida
             return jsonResponse({ error: 'Sesión inválida o expirada' }, 401, {
-                'Set-Cookie': 'session_token=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax'
+                'Set-Cookie': 'session_token=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict; Secure'
             });
         }
 
@@ -49,9 +42,5 @@ export async function onRequest(context) {
     }
 
     // Continuar al siguiente middleware o función
-    const response = await context.next();
-    
-    // Adjuntar cabeceras CORS básicas
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    return response;
+    return context.next();
 }

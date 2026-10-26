@@ -10,7 +10,7 @@ Debes configurar estas variables en **Cloudflare Pages → Settings → Environm
    - Una cadena aleatoria larga (mínimo 32 caracteres)
    - Ejemplo: `your-super-secret-random-string-here-min-32-chars`
    - Se usa para firmar y verificar tokens JWT
-   - **NO debe ser el valor por defecto**
+   - Si falta o tiene menos de 32 caracteres, la API responde 500 y no se emiten sesiones
 
 2. **GITHUB_CLIENT_ID**
    - Obtenido de: GitHub → Settings → Developer settings → OAuth Apps
@@ -24,14 +24,15 @@ Debes configurar estas variables en **Cloudflare Pages → Settings → Environm
 
 4. **ENVIRONMENT** 
    - Valores: `production` o `development`
-   - En desarrollo: permite modo mock
-   - En producción: desactiva mock, requiere GitHub real
+   - Solo `development` habilita el login mock (`mock_dev_code`); cualquier otro valor o ausencia lo desactiva
+   - Sin `GITHUB_CLIENT_ID` fuera de desarrollo, el login falla en vez de usar el mock
 
 ## Cambios de Seguridad Realizados
 
 ✅ **JWT_SECRET obligatorio** - No hay valor por defecto
 ✅ **Mock mode desactivado en producción** - Solo en desarrollo
-✅ **CORS restringido** - Solo de `https://epictracker.pages.dev`
+✅ **Sin CORS** - La API es same-origin; no se emiten cabeceras `Access-Control-*`
+✅ **OAuth `state`** - Aleatorio, ligado a una cookie de 10 min, validado en el callback
 ✅ **SameSite=Strict** - Protección máxima contra CSRF
 ✅ **HttpOnly + Secure** - Cookie no accesible desde JS
 
@@ -46,9 +47,7 @@ Usuario → "Iniciar Sesión" → GitHub OAuth → JWT + Cookie HttpOnly → Aut
 - [ ] JWT_SECRET configurado en Cloudflare ✓
 - [ ] GITHUB_CLIENT_ID configurado
 - [ ] GITHUB_CLIENT_SECRET configurado
-- [ ] ENVIRONMENT = production
-- [ ] Dominio configurado como `epictracker.pages.dev` (o tu dominio)
-- [ ] CORS Origin actualizado si usas dominio personalizado
+- [ ] ENVIRONMENT sin definir o `production` (nunca `development` en producción)
 
 ## Notas
 

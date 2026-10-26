@@ -79,7 +79,7 @@ export async function verifyJWT(token, secret) {
         const decodedPayload = JSON.parse(atob(paddedPayload));
         
         // Validar expiración (exp)
-        if (decodedPayload.exp && Date.now() / 1000 > decodedPayload.exp) {
+        if (!decodedPayload.exp || Date.now() / 1000 > decodedPayload.exp) {
             return null;
         }
         
@@ -88,6 +88,17 @@ export async function verifyJWT(token, secret) {
         console.error('Error al verificar JWT:', e);
         return null;
     }
+}
+
+// --- CONFIGURACIÓN ---
+// JWT_SECRET es obligatorio: sin él (o si es demasiado corto) no se firma ni se verifica nada.
+export function getJwtSecret(env) {
+    const secret = env.JWT_SECRET;
+    return secret && secret.length >= 32 ? secret : null;
+}
+
+export function isDevelopment(env) {
+    return env.ENVIRONMENT === 'development';
 }
 
 // --- PARSEO DE COOKIES ---
